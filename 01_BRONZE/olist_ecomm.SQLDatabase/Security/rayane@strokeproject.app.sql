@@ -1,0 +1,6 @@
+CREATE USER [rayane@strokeproject.app]
+    WITH SID = 0xF78B4338BC79DB4786EE6EBE57D9B7C2, TYPE = E;
+
+
+GO
+
