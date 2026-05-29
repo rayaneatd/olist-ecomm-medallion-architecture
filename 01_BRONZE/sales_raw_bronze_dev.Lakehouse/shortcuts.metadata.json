@@ -1,1 +1,67 @@
-[]
+[
+  {
+    "name": "sales",
+    "path": "/Tables",
+    "target": {
+      "type": "OneLake",
+      "oneLake": {
+        "path": "Tables/sales",
+        "itemId": "252a6b1f-d3e8-864a-4cec-dbf3af26b8b5",
+        "workspaceId": "00000000-0000-0000-0000-000000000000",
+        "artifactType": "SQLDbNative"
+      }
+    }
+  },
+  {
+    "name": "ref",
+    "path": "/Tables",
+    "target": {
+      "type": "OneLake",
+      "oneLake": {
+        "path": "Tables/ref",
+        "itemId": "252a6b1f-d3e8-864a-4cec-dbf3af26b8b5",
+        "workspaceId": "00000000-0000-0000-0000-000000000000",
+        "artifactType": "SQLDbNative"
+      }
+    }
+  },
+  {
+    "name": "marketplace",
+    "path": "/Tables",
+    "target": {
+      "type": "OneLake",
+      "oneLake": {
+        "path": "Tables/marketplace",
+        "itemId": "252a6b1f-d3e8-864a-4cec-dbf3af26b8b5",
+        "workspaceId": "00000000-0000-0000-0000-000000000000",
+        "artifactType": "SQLDbNative"
+      }
+    }
+  },
+  {
+    "name": "geo",
+    "path": "/Tables",
+    "target": {
+      "type": "OneLake",
+      "oneLake": {
+        "path": "Tables/geo",
+        "itemId": "252a6b1f-d3e8-864a-4cec-dbf3af26b8b5",
+        "workspaceId": "00000000-0000-0000-0000-000000000000",
+        "artifactType": "SQLDbNative"
+      }
+    }
+  },
+  {
+    "name": "catalog",
+    "path": "/Tables",
+    "target": {
+      "type": "OneLake",
+      "oneLake": {
+        "path": "Tables/catalog",
+        "itemId": "252a6b1f-d3e8-864a-4cec-dbf3af26b8b5",
+        "workspaceId": "00000000-0000-0000-0000-000000000000",
+        "artifactType": "SQLDbNative"
+      }
+    }
+  }
+]
