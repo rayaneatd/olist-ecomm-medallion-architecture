@@ -31,7 +31,17 @@
 df = spark.read.format('DELTA').load('abfss://OList@onelake.dfs.fabric.microsoft.com/sales_raw_bronze_dev.Lakehouse/Tables/catalog/product_categories')
 
 display(df)
-df.show()
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+spark.range(2).show()
 
 # METADATA ********************
 
