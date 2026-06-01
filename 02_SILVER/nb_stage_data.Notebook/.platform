@@ -2,8 +2,8 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
   "metadata": {
     "type": "Notebook",
-    "displayName": "Notebook 1",
-    "description": "New notebook"
+    "displayName": "nb_stage_data",
+    "description": "préparer les données pour le staging"
   },
   "config": {
     "version": "2.0",
