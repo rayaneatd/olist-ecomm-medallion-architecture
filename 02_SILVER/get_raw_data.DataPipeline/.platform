@@ -1,11 +1,11 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
   "metadata": {
-    "type": "Dataflow",
-    "displayName": "sales_raw_ingestion_dev"
+    "type": "DataPipeline",
+    "displayName": "get_raw_data"
   },
   "config": {
     "version": "2.0",
-    "logicalId": "c9141d32-ffd0-b1d1-4135-2d3840ba134a"
+    "logicalId": "b7591318-e50b-8e69-43b3-005f503be276"
   }
 }

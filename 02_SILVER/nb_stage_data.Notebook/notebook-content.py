@@ -25,27 +25,13 @@
 
 # CELL ********************
 
-# Welcome to your new notebook
-# Type here in the cell editor to add code!
+# MAGIC %%sql
+# MAGIC -- création du schéma
 
-df = spark.read.format('DELTA').load('abfss://OList@onelake.dfs.fabric.microsoft.com/sales_raw_bronze_dev.Lakehouse/Tables/catalog/product_categories')
-
-display(df)
 
 # METADATA ********************
 
 # META {
-# META   "language": "python",
-# META   "language_group": "synapse_pyspark"
-# META }
-
-# CELL ********************
-
-spark.range(2).show()
-
-# METADATA ********************
-
-# META {
-# META   "language": "python",
+# META   "language": "sparksql",
 # META   "language_group": "synapse_pyspark"
 # META }
