@@ -2,67 +2,6 @@
   "properties": {
     "activities": [
       {
-        "name": "If Condition1",
-        "type": "IfCondition",
-        "state": "Inactive",
-        "onInactiveMarkAs": "Succeeded",
-        "dependsOn": [
-          {
-            "activity": "Lookup Legacy",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          },
-          {
-            "activity": "Lookup OLTP",
-            "dependencyConditions": [
-              "Succeeded"
-            ]
-          }
-        ],
-        "typeProperties": {
-          "ifFalseActivities": [],
-          "ifTrueActivities": []
-        }
-      },
-      {
-        "name": "Lookup Legacy",
-        "type": "Lookup",
-        "state": "Inactive",
-        "onInactiveMarkAs": "Succeeded",
-        "dependsOn": [],
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30,
-          "secureOutput": false,
-          "secureInput": false
-        },
-        "typeProperties": {
-          "source": {
-            "type": "LakehouseTableSource"
-          },
-          "datasetSettings": {
-            "annotations": [],
-            "linkedService": {
-              "name": "sales_raw_bronze_dev",
-              "properties": {
-                "annotations": [],
-                "type": "Lakehouse",
-                "typeProperties": {
-                  "workspaceId": "cdfb3c3e-d807-4bd6-b688-56180bf6c25d",
-                  "artifactId": "e772e477-926d-4523-b64a-aadac3e7c8d3",
-                  "rootFolder": "Tables"
-                }
-              }
-            },
-            "type": "LakehouseTable",
-            "schema": [],
-            "typeProperties": {}
-          }
-        }
-      },
-      {
         "name": "Lookup OLTP",
         "type": "Lookup",
         "state": "Inactive",
@@ -98,36 +37,6 @@
             "schema": [],
             "typeProperties": {}
           }
-        }
-      },
-      {
-        "name": "MicrosoftTeams1",
-        "type": "MicrosoftTeams",
-        "state": "Inactive",
-        "onInactiveMarkAs": "Succeeded",
-        "dependsOn": [
-          {
-            "activity": "Lookup Legacy",
-            "dependencyConditions": [
-              "Failed"
-            ]
-          },
-          {
-            "activity": "Lookup OLTP",
-            "dependencyConditions": [
-              "Failed"
-            ]
-          }
-        ],
-        "policy": {
-          "timeout": "0.12:00:00",
-          "retry": 0,
-          "retryIntervalInSeconds": 30,
-          "secureOutput": false,
-          "secureInput": false
-        },
-        "typeProperties": {
-          "operationType": "SendMessageInChannel"
         }
       }
     ]

@@ -25,13 +25,16 @@
 
 # CELL ********************
 
-# MAGIC %%sql
-# MAGIC -- création du schéma
+from pyspark.sql.functions import (
+    col
+) 
 
+df = spark.sql("SELECT * FROM sales_raw_bronze_dev.catalog.products LIMIT 100")
+display(df)
 
 # METADATA ********************
 
 # META {
-# META   "language": "sparksql",
+# META   "language": "python",
 # META   "language_group": "synapse_pyspark"
 # META }
