@@ -1,1 +1,15 @@
-[]
+[
+  {
+    "name": "ref_category_mapping",
+    "path": "/Tables/dbo",
+    "target": {
+      "type": "OneLake",
+      "oneLake": {
+        "path": "Files/ref/category_mapping",
+        "itemId": "c3e7c8d3-aada-b64a-4523-926de772e477",
+        "workspaceId": "00000000-0000-0000-0000-000000000000",
+        "artifactType": "Lakehouse"
+      }
+    }
+  }
+]

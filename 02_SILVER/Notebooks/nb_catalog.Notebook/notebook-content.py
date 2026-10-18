@@ -32,6 +32,17 @@
 # - # **Catalog Data**
 # The catalog contains two tables: products and their categories. The output of this notebook will be a denormalized `product` table. We will conserve the history of each product, and will only use the modern categories also
 
+# CELL ********************
+
+!lscpu
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
 # PARAMETERS CELL ********************
 
 # CONFIGURATION
@@ -52,7 +63,7 @@ TABLE_NAME = "products"
 
 # IMPORTS
 from pyspark.sql.functions import (
-    col, trim
+    col, trim, when, lit, current_timestamp, broadcast
 ) 
 
 # METADATA ********************
@@ -68,12 +79,17 @@ from pyspark.sql.functions import (
 # MAGIC CREATE SCHEMA IF NOT EXISTS catalog;
 # MAGIC 
 # MAGIC CREATE TABLE IF NOT EXISTS sales_silver.catalog.categories (
-# MAGIC     category_id INTEGER,
-# MAGIC     category_code STRING,
-# MAGIC     category_label STRING,
-# MAGIC     parent_category_code STRING
+# MAGIC     category_id INTEGER NOT NULL,
+# MAGIC     category_code STRING NOT NULL,
+# MAGIC     category_label STRING NOT NULL,
+# MAGIC     parent_category_code STRING 
 # MAGIC )
-# MAGIC USING DELTA;
+# MAGIC USING DELTA
+# MAGIC 
+# MAGIC TBLPROPERTIES (
+# MAGIC   'delta.enableChangeDataFeed' = 'false',
+# MAGIC   'microsoft.fabric.vorder.enabled' = 'true'
+# MAGIC );
 # MAGIC 
 # MAGIC CREATE TABLE IF NOT EXISTS sales_silver.catalog.products (
 # MAGIC     -- Columns
@@ -89,10 +105,16 @@ from pyspark.sql.functions import (
 # MAGIC     created_at TIMESTAMP,
 # MAGIC 
 # MAGIC     -- Technical columns
+# MAGIC     _ingested_at TIMESTAMP NOT NULL,
+# MAGIC     _source_file STRING,
+# MAGIC     _source_system STRING,
+# MAGIC 
+# MAGIC     -- SCD2 columns
 # MAGIC     scd_start_date TIMESTAMP NOT NULL,
 # MAGIC     scd_end_date TIMESTAMP,
 # MAGIC     scd_is_current BOOLEAN NOT NULL,
 # MAGIC     tech_inserted_at TIMESTAMP NOT NULL
+# MAGIC 
 # MAGIC )
 # MAGIC USING DELTA
 # MAGIC 
@@ -100,6 +122,8 @@ from pyspark.sql.functions import (
 # MAGIC     'delta.enableChangeDataFeed' = 'false',
 # MAGIC     'microsoft.fabric.vorder.enabled' = 'true'
 # MAGIC );
+# MAGIC 
+# MAGIC ALTER TABLE sales_silver.catalog.products ADD CONSTRAINT check_src CHECK (_source_system IN ('csv_archive', 'database'));
 
 
 # METADATA ********************
@@ -108,6 +132,10 @@ from pyspark.sql.functions import (
 # META   "language": "sparksql",
 # META   "language_group": "synapse_pyspark"
 # META }
+
+# MARKDOWN ********************
+
+# # CATEGORY transformation
 
 # CELL ********************
 
@@ -137,6 +165,47 @@ silver_categories.write.format("delta").mode("overwrite").option("mergeSchema", 
 
 # CELL ********************
 
+# NOTE: The categories were hardcoded in Brizilian in the .csv files. So I created a referance table to convert them into IDs
+
+#df = spark.sql("SELECT * FROM sales_silver.dbo.ref_category_mapping")
+#display(df)
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark",
+# META   "frozen": false,
+# META   "editable": true
+# META }
+
+# MARKDOWN ********************
+
+# # PRODUCTS transformations
+
+# CELL ********************
+
+# ON a deux choses à riconcilier: 'created_at' qu'on met en NULL pour la simplicité, 'product_category_name' qu'on transfo en category_id ET on drop les nulls
+df_products_csv = spark.read.format("csv").option("header","true").load("abfss://DEV_OList@onelake.dfs.fabric.microsoft.com/sales_raw_bronze_dev.Lakehouse/Files/archive/olist_products_dataset.csv")
+
+df_products_csv = df_products_csv.write
+# on fait de meme pour les données stockées au sein de la database
+# juste on fais un watermark simple
+# SI y a aucun watermark on prend le plus petit updated_at
+# SINON, on part de ce point, et on sélectionne avec un offset de 1000
+# SI CA MARCHE: on update le watermark SI ECHEC: on quarentine les mauvais rows + on recois une notif discord/mail et le pipeline continue quand meme 
+# (en quarentine on stock l'offset et le premier updated at pour pouvoir fallback apres avoir modifié le code)
+# ON REPETE
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
 
 df_products_csv = spark.read.format("csv") \
                 .option("header","true") \
@@ -145,6 +214,25 @@ df_products_csv = spark.read.format("csv") \
 
 # df_products_csv = df_products_csv.fillna
 display(df_products_csv.limit(10))
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+# TEST TKT VOIR LE TOUTTT
+
+df = spark.sql("SELECT COUNT(*) FROM sales_raw_bronze_dev.sales.orders")
+display(df)
+
+
+df2 = spark.read.format("csv").option("header","true").load("abfss://DEV_OList@onelake.dfs.fabric.microsoft.com/sales_raw_bronze_dev.Lakehouse/Files/archive/olist_orders_dataset.csv")
+# df now is a Spark DataFrame containing CSV data from "abfss://DEV_OList@onelake.dfs.fabric.microsoft.com/sales_raw_bronze_dev.Lakehouse/Files/archive/olist_orders_dataset.csv".
+display(df2.count())
 
 # METADATA ********************
 
